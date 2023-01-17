@@ -34,7 +34,7 @@ lua.commands.Run = ":!lua %"
 -- C
 local c = language:new()
 Languages.c = c
-c.commands.Format = ":!clang-format % -i -style=mozilla"
+c.commands.Format = ":!clang-format % -i -style=llvm"
 c.commands.Compile = ":!gcc % -o %:r.bin"
 
 c.compile_flags = {'-Wall', '-Wextra', '-std=c99'}
