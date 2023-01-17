@@ -8,8 +8,11 @@ function language:new()
 
         compile_flags = {},
 
-        commands = {Format = nil, Run = nil, Compile = nil}
+        commands = {Format = nil, Run = nil, Compile = nil, Lint = nil}
+
     }
+
+    self.__index = self
 
     return setmetatable(newObj, self)
 end
@@ -20,6 +23,7 @@ Languages.python = python
 
 python.commands.Format = ":!black %"
 python.commands.Run = ":!python3 %"
+python.commands.Lint = ":!pylint %"
 
 -- lua
 local lua = language:new()
@@ -27,22 +31,41 @@ Languages.lua = lua
 lua.commands.Format = ":!lua-format % -i"
 lua.commands.Run = ":!lua %"
 
+-- C
+local c = language:new()
+Languages.c = c
+c.commands.Format = ":!clang-format % -i -style=llvm"
+c.commands.Compile = ":!gcc % -o %:r.bin"
+
+c.compile_flags = {'-Wall', '-Wextra', '-std=c99'}
+
+-- C++
+local cpp = c:new()
+Languages.cpp = cpp
+cpp.commands.Format = c.commands.Format
+cpp.commands.Compile = c.commands.Compile
+
+cpp.compile_flags = {" -lstdc++ -Wall", "-Wextra", "-pedantic", "-std=c++17"}
+
 for langName, langConfig in pairs(Languages) do
 
     for command, action in pairs(langConfig.commands) do
 
-        repeat
+        if not action then
+          action = string.format(":!echo %s not defined for %s", command, langName)
 
-            if not action then do break end end
+        elseif command == "Compile" then
+            action = action .. " " ..
+                         table.concat(langConfig.compile_flags, " ")
 
-            local cmdStr = string.format(
-                               "au Filetype %s exe \"command! %s %s\"",
-                               langName, command, action)
-            vim.cmd(cmdStr)
-            print(cmdStr)
+        end
 
-        until true
+        local cmdStr = string.format("au Filetype %s exe \"command! %s %s\"",
+                                     langName, command, action)
+        vim.cmd(cmdStr)
+
     end
+
 
 end
 
