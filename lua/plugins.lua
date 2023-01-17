@@ -30,6 +30,7 @@ Plug 'psf/black', { 'branch': 'stable' }
 Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh' }
 Plug 'itmecho/neoterm.nvim'
 Plug 'chentoast/marks.nvim'
+Plug 'phaazon/hop.nvim'
 call plug#end()
 
 ]])
@@ -48,8 +49,10 @@ if exists("g:neovide")
 	colorscheme moonfly
 endif
 
-
+  
 ]])
+
+require'hop'.setup()
 
 require'marks'.setup {
   -- whether to map keybinds or not. default true
