@@ -23,6 +23,8 @@ leaderCommandMap('mf', "Format")
 leaderCommandMap('mc', "Compile")
 leaderCommandMap("ml", "Lint")
 
+leaderCommandMap('ff', 'NERDTreeToggle')
+
 
 
 
