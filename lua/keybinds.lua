@@ -18,10 +18,10 @@ end
 
 vim.g.mapleader = ','
 
-leaderCommandMap('mr', "Run")
-leaderCommandMap('mf', "Format")
-leaderCommandMap('mc', "Compile")
-leaderCommandMap("ml", "Lint")
+leaderCommandMap('kr', "Run")
+leaderCommandMap('kf', "Format")
+leaderCommandMap('kc', "Compile")
+leaderCommandMap("kl", "Lint")
 
 leaderCommandMap('ff', 'NERDTreeToggle')
 
