@@ -25,6 +25,11 @@ leaderCommandMap("kl", "Lint")
 
 leaderCommandMap('ff', 'NERDTreeToggle')
 
+
+vim.cmd('tnoremap <Leader>tm  <C-\\><C-n><bar><C-w>')
+leaderCommandMap('ts', ':botright :vertical Topen resize=40<CR>')
+leaderCommandMap('tv', ':botright :vertical Topen')
+
 --[[
 -- place this in one of your configuration file(s)
 local hop = require('hop')
