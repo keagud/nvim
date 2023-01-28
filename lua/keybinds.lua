@@ -1,20 +1,15 @@
-
 local function map(mode, shortcut, command)
-  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = false, silent = true })
+    vim.api.nvim_set_keymap(mode, shortcut, command,
+                            {noremap = false, silent = true})
 end
 
-local function nmap(shortcut, command)
-  map('n', shortcut, command)
- end
+local function nmap(shortcut, command) map('n', shortcut, command) end
 
-local function imap(shortcut, command)
-  map('i', shortcut, command)
-end
+local function imap(shortcut, command) map('i', shortcut, command) end
 
 local function leaderCommandMap(shortcut, command)
-  nmap( "<Leader>"..shortcut, ":"..command.."<CR>")
+    nmap("<Leader>" .. shortcut, ":" .. command .. "<CR>")
 end
-
 
 vim.g.mapleader = ','
 
@@ -22,9 +17,11 @@ leaderCommandMap('kr', "Run")
 leaderCommandMap('kf', "Format")
 leaderCommandMap('kc', "Compile")
 leaderCommandMap("kl", "Lint")
+leaderCommandMap("kb", "Build")
 
+leaderCommandMap('ss', ':set spell')
+leaderCommandMap('sn', ':set nospell')
 leaderCommandMap('ff', 'NERDTreeToggle')
-
 
 vim.cmd('tnoremap <Leader>tm  <C-\\><C-n><bar><C-w>')
 leaderCommandMap('ts', ':botright :vertical Topen resize=40<CR>')
@@ -49,6 +46,5 @@ vim.keymap.set('', 'T', function()
 end, {remap=true})
 
 
-]]--
-
+]] --
 
