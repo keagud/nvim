@@ -38,6 +38,7 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 set noswapfile
 let g:neovide_cursor_vfx_mode="wireframe"
+let g:neoterm_size=""
 
 set guifont=CaskaydiaCove_Nerd_Font_Regular,Hack,Noto_Color_Emoji
 

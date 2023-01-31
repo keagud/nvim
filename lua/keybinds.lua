@@ -18,6 +18,7 @@ leaderCommandMap('kf', "Format")
 leaderCommandMap('kc', "Compile")
 leaderCommandMap("kl", "Lint")
 leaderCommandMap("kb", "Build")
+leaderCommandMap("kt", "Test")
 
 leaderCommandMap('ss', ':set spell')
 leaderCommandMap('sn', ':set nospell')

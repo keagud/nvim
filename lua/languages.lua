@@ -8,7 +8,7 @@ function language:new()
 
         compile_flags = {},
 
-        commands = {Format = nil, Run = "./", Compile = nil, Lint = nil, Build = "make" }
+        commands = {Format = nil, Run = "./", Compile = nil, Lint = nil, Build = "make", Test = nil }
 
     }
 
@@ -18,35 +18,37 @@ function language:new()
 end
 
 BINARY_STYLE = "%:r.bin"
+GIT_TOPLEVEL = "$(git rev-parse --show-toplevel)"
 
 -- Python
 local python = language:new()
 Languages.python = python
 
-python.commands.Format = "!black %"
-python.commands.Run = "!python3 %"
-python.commands.Lint = "!pylint %"
+python.commands.Format = "black %"
+python.commands.Run = "python3 %"
+python.commands.Lint = "pylint %"
+python.commands.Test = "poetry run pytest"
 
 -- lua
 local lua = language:new()
 Languages.lua = lua
-lua.commands.Format = "!lua-format % -i"
-lua.commands.Run = "!lua %"
+lua.commands.Format = "lua-format % -i"
+lua.commands.Run = "lua %"
 
 -- rust
 local rust = language:new()
 Languages.rust = rust
-rust.commands.Format = "!rustfmt %"
-rust.commands.Compile = "!rustc % -o " .. BINARY_STYLE
-rust.commands.Lint = "!clippy-driver %"
-rust.commands.Build = "!cargo build"
+rust.commands.Format = "rustfmt %"
+rust.commands.Compile = "rustc % -o " .. BINARY_STYLE
+rust.commands.Lint = "clippy-driver %"
+rust.commands.Build = "cargo build"
 
 
 -- C
 local c = language:new()
 Languages.c = c
-c.commands.Format = ":!clang-format % -i -style=llvm"
-c.commands.Compile = ":!gcc % -o " .. BINARY_STYLE
+c.commands.Format = "clang-format % -i -style=llvm"
+c.commands.Compile = "gcc % -o " .. BINARY_STYLE
 
 c.compile_flags = {'-Wall', '-Wextra', '-std=c99'}
 
@@ -74,9 +76,14 @@ for langName, langConfig in pairs(Languages) do
 
           action = langConfig.commands.Compile .. " && " .. langConfig.commands.Run .. BINARY_STYLE
 
-        end
 
-        action = ":" .. action
+      elseif command == "Test" and langConfig.commands.Test ~= nil then
+        action ="cd " .. GIT_TOPLEVEL .. " && " .. action
+        print(action)
+      end
+
+
+        action = ":!" .. action
 
         local cmdStr = string.format("au Filetype %s exe \"command! %s %s\"",
                                      langName, command, action)
