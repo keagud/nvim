@@ -8,7 +8,14 @@ function language:new()
 
         compile_flags = {},
 
-        commands = {Format = nil, Run = "./", Compile = nil, Lint = nil, Build = "make", Test = nil }
+        commands = {
+            Compile = nil,
+            Format = nil,
+            Lint = nil,
+            Build = "make",
+            Test = nil,
+            Run = "./",
+        }
 
     }
 
@@ -43,7 +50,6 @@ rust.commands.Compile = "rustc % -o " .. BINARY_STYLE
 rust.commands.Lint = "clippy-driver %"
 rust.commands.Build = "cargo build"
 
-
 -- C
 local c = language:new()
 Languages.c = c
@@ -66,7 +72,8 @@ for langName, langConfig in pairs(Languages) do
     for command, action in pairs(langConfig.commands) do
 
         if not action then
-          action = string.format(":!echo %s not defined for %s", command, langName)
+            action = string.format(":!echo %s not defined for %s", command,
+                                   langName)
 
         elseif command == "Compile" then
             action = action .. " " ..
@@ -74,14 +81,13 @@ for langName, langConfig in pairs(Languages) do
 
         elseif command == "Run" and langConfig.commands.Compile ~= nil then
 
-          action = langConfig.commands.Compile .. " && " .. langConfig.commands.Run .. BINARY_STYLE
+            action =  langConfig.commands.Compile  .. " " .. table.concat(langConfig.compile_flags, " " ).. " && " ..
+                         langConfig.commands.Run .. BINARY_STYLE
 
-
-      elseif command == "Test" and langConfig.commands.Test ~= nil then
-        action ="cd " .. GIT_TOPLEVEL .. " && " .. action
-        print(action)
-      end
-
+        elseif command == "Test" and langConfig.commands.Test ~= nil then
+            action = "cd " .. GIT_TOPLEVEL .. " && " .. action
+            print(action)
+        end
 
         action = ":!" .. action
 
@@ -90,7 +96,6 @@ for langName, langConfig in pairs(Languages) do
         vim.cmd(cmdStr)
 
     end
-
 
 end
 
