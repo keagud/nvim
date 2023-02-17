@@ -45,7 +45,7 @@ lua.commands.Run = "lua %"
 -- rust
 local rust = language:new()
 Languages.rust = rust
-rust.commands.Format = "rustfmt %"
+rust.commands.Format = "rustfmt % &> /dev/null || cargo fmt"
 rust.commands.Compile = "rustc % -o " .. BINARY_STYLE
 rust.commands.Lint = "clippy-driver %"
 rust.commands.Build = "cargo build"
@@ -53,7 +53,7 @@ rust.commands.Build = "cargo build"
 -- C
 local c = language:new()
 Languages.c = c
-c.commands.Format = "clang-format % -i -style=llvm"
+c.commands.Format = "clang-format % -i -style=webkit"
 c.commands.Compile = "gcc % -o " .. BINARY_STYLE
 
 c.compile_flags = {'-Wall', '-Wextra', '-std=c99'}
@@ -65,6 +65,18 @@ cpp.commands.Format = c.commands.Format
 cpp.commands.Compile = c.commands.Compile
 
 cpp.compile_flags = {" -lstdc++ -Wall", "-Wextra", "-pedantic", "-std=c++17"}
+
+
+-- (common) Lisp
+local lisp = language:new()
+Languages.lisp = lisp
+lisp.commands.Run = "clisp -i % -q"
+
+-- (scheme) Lisp
+
+local scheme = language:new()
+Languages.scheme = scheme
+scheme.commands.Run = "chicken-csi % -q"
 
 --- autocmd setup
 for langName, langConfig in pairs(Languages) do
