@@ -17,6 +17,7 @@ leaderCommandMap('kr', "Run")
 leaderCommandMap('kf', "Format")
 leaderCommandMap('kc', "Compile")
 leaderCommandMap("kl", "Lint")
+leaderCommandMap("klf", "Fix")
 leaderCommandMap("kb", "Build")
 leaderCommandMap("kt", "Test")
 

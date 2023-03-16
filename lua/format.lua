@@ -1,4 +1,3 @@
-
 vim.cmd([[ 
 
 syntax enable

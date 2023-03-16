@@ -15,6 +15,7 @@ function language:new()
             Build = "make",
             Test = nil,
             Run = "./",
+            Fix = nil
         }
 
     }
@@ -33,8 +34,9 @@ Languages.python = python
 
 python.commands.Format = "black %"
 python.commands.Run = "python3 %"
-python.commands.Lint = "pylint %"
+python.commands.Lint = "ruff %"
 python.commands.Test = "poetry run pytest"
+python.commands.Fix = "ruff % --fix"
 
 -- lua
 local lua = language:new()
@@ -61,11 +63,26 @@ c.compile_flags = {'-Wall', '-Wextra', '-std=c99'}
 -- C++
 local cpp = c:new()
 Languages.cpp = cpp
-cpp.commands.Format = c.commands.Format
-cpp.commands.Compile = c.commands.Compile
+cpp.commands = c.commands
 
 cpp.compile_flags = {" -lstdc++ -Wall", "-Wextra", "-pedantic", "-std=c++17"}
 
+-- javascript
+local javascript = language:new()
+
+Languages.javascript = javascript
+javascript.commands.Run = "node %"
+javascript.commands.Format = "npx prettier % -w"
+javascript.commands.Lint = "npx eslint %"
+javascript.commands.Fix = "npx eslint % --fix"
+
+-- typescript
+local typescript = javascript:new()
+typescript.commands = javascript.commands
+Languages.typescript = typescript
+Languages.typescript = typescript
+typescript.commands.Run = "npx ts-node %"
+typescript.commands.Compile = "npx tsc %"
 
 -- (common) Lisp
 local lisp = language:new()
@@ -77,6 +94,10 @@ lisp.commands.Run = "clisp -i % -q"
 local scheme = language:new()
 Languages.scheme = scheme
 scheme.commands.Run = "chicken-csi % -q"
+
+local racket = language:new()
+Languages.racket = racket
+racket.commands.Run = "racket %"
 
 --- autocmd setup
 for langName, langConfig in pairs(Languages) do
@@ -91,14 +112,15 @@ for langName, langConfig in pairs(Languages) do
             action = action .. " " ..
                          table.concat(langConfig.compile_flags, " ")
 
-        elseif command == "Run" and langConfig.commands.Compile ~= nil then
+        elseif command == "Run" and langConfig.commands.Run == nil and
+            langConfig.commands.Compile ~= nil then
 
-            action =  langConfig.commands.Compile  .. " " .. table.concat(langConfig.compile_flags, " " ).. " && " ..
+            action = langConfig.commands.Compile .. " " ..
+                         table.concat(langConfig.compile_flags, " ") .. " && " ..
                          langConfig.commands.Run .. BINARY_STYLE
 
         elseif command == "Test" and langConfig.commands.Test ~= nil then
             action = "cd " .. GIT_TOPLEVEL .. " && " .. action
-            print(action)
         end
 
         action = ":!" .. action
